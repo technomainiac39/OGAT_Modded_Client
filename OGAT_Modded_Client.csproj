@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyName>OGAT_Modded_Client</AssemblyName>
+    <Description>My first plugin</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>OGAT_Modded_Client</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="libs\ZeroTier.Source.ReadOnly\**" />
+    <EmbeddedResource Remove="libs\ZeroTier.Source.ReadOnly\**" />
+    <None Remove="libs\ZeroTier.Source.ReadOnly\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\AddressInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\Constants.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\Event.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\example.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\MulticastInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\NetworkInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\NetworkStream.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\Node.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\NodeInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\PeerInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\RouteInfo.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\Socket.cs" />
+    <None Remove="C:\Users\Oliver Berry\.nuget\packages\zerotier.sockets\1.8.4\contentFiles\cs\any\ZeroTier.Source.ReadOnly\SocketException.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="5.6.0" IncludeAssets="compile" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>libs\Assembly-CSharp-firstpass-publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>libs\Assembly-CSharp-publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="OGAT_modding_API">
+      <HintPath>..\OGAT_GuardsInTheDark_Mod\libs\OGAT_modding_API.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>libs\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
