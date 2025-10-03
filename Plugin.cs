@@ -1053,6 +1053,7 @@ namespace OGAT_Modded_Client
 
                     //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
                     //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
+                    //nevermind StartCoroutine is a monobehaviour function, will need to run with the new logger to check if it is still called frequently after new masterserver is set
                     Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#DISPLAYIP", "mwa ha ha", () => { Singleton<ServerList>.I.UpdateServerList(); }));
 
                 });
