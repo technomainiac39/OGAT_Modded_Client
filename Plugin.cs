@@ -832,8 +832,20 @@ namespace OGAT_Modded_Client
             //starts the host or client message box right after
             if (!Globals.ConnectedToMasterServer)
             {
-                    Singleton<MessageBoxUI>.I.Show("#WAITFORZTIP", "does it", () => { Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#HOSTORCLIENT", "well well well", null)); });
+                Singleton<MessageBoxUI>.I.Show("#WAITFORZTIP", "does it", () => { Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#HOSTORCLIENT", "well well well", null)); });
             }
+
+            
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ServerList), "UpdateServerList")]
+        public static void LogUpdateServerList(ServerList __instance)
+        {
+            var myLogSource = new ManualLogSource("OGAT_MODDING_API");
+            BepInEx.Logging.Logger.Sources.Add(myLogSource);
+            myLogSource.LogInfo($"updating serverlist {__instance}, this is show ip: {__instance.showIP}");
+            BepInEx.Logging.Logger.Sources.Remove(myLogSource);
         }
 
         [HarmonyPostfix]
@@ -1028,6 +1040,9 @@ namespace OGAT_Modded_Client
                     clientButton.gameObject.SetActive(false);
                     close.gameObject.SetActive(true);
                     close.OnClick(close);
+
+                    //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
+                    //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
                     Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#DISPLAYIP", "mwa ha ha", () => { Singleton<ServerList>.I.UpdateServerList(); }));
 
                 });
@@ -1038,6 +1053,9 @@ namespace OGAT_Modded_Client
                     Globals.ConnectedToMasterServer = false;
                     hostButton.SetActive(false);
                     //HostIpInput.SetActive(true);
+
+                    //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
+                    //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
                     Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#ENTERMASTERSERVERIP", "well well well", ()=> { Singleton<ServerList>.I.UpdateServerList(); }));
                     close.gameObject.SetActive(true);
                     close.OnClick(close);
