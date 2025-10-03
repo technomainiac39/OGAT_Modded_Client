@@ -30,7 +30,7 @@ using System.Linq;
 using UnityEngine.SocialPlatforms;
 
 //The required Zt libs and so on for the Zt manager are installed automatically with a small pop up from windows its actually fucking great
-
+//using unity 5.6.6f2
 namespace OGAT_Modded_Client
 {
     public static class Globals
@@ -1028,6 +1028,16 @@ namespace OGAT_Modded_Client
 
                 hostButton = API_Methods.CreateSGButton(__instance, "hostButton", new Vector2(200, 50), new Vector2(125, -50), "Host", 24, Color.white, Color.white, Globals.OGAT_Orange, on_click: (btn) =>
                 {
+                    //logic for trying to see if zerotier ip address is working
+                    string ipFromUnity = Network.player.ipAddress;
+                    string exIPFromUnity = Network.player.externalIP;
+                    
+
+                    var myLogSource2 = new ManualLogSource("OGAT_MODDING_API");
+                    BepInEx.Logging.Logger.Sources.Add(myLogSource2);
+                    myLogSource2.LogInfo($"IP from Unity is: internal {ipFromUnity}, external {exIPFromUnity} on port {Network.player.externalPort}");
+                    BepInEx.Logging.Logger.Sources.Remove(myLogSource2);
+                    ////
                     oneChoiceClicked = true;
                     Globals.MasterServerPort = 23466;
                     Plugin.HostMasterServer(close);
