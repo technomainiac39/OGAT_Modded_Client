@@ -30,7 +30,7 @@ using System.Linq;
 using UnityEngine.SocialPlatforms;
 
 //The required Zt libs and so on for the Zt manager are installed automatically with a small pop up from windows its actually fucking great
-
+//using unity 5.6.6f2
 namespace OGAT_Modded_Client
 {
     public static class Globals
@@ -842,8 +842,20 @@ namespace OGAT_Modded_Client
             //starts the host or client message box right after
             if (!Globals.ConnectedToMasterServer)
             {
-                    Singleton<MessageBoxUI>.I.Show("#WAITFORZTIP", "does it", () => { Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#HOSTORCLIENT", "well well well", null)); });
+                Singleton<MessageBoxUI>.I.Show("#WAITFORZTIP", "does it", () => { Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#HOSTORCLIENT", "well well well", null)); });
             }
+
+            
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ServerList), "UpdateServerList")]
+        public static void LogUpdateServerList(ServerList __instance)
+        {
+            var myLogSource = new ManualLogSource("OGAT_MODDING_API");
+            BepInEx.Logging.Logger.Sources.Add(myLogSource);
+            myLogSource.LogInfo($"updating serverlist {__instance}, this is show ip: {__instance.showIP}");
+            BepInEx.Logging.Logger.Sources.Remove(myLogSource);
         }
 
         [HarmonyPostfix]
@@ -1048,6 +1060,10 @@ namespace OGAT_Modded_Client
                     clientButton.gameObject.SetActive(false);
                     close.gameObject.SetActive(true);
                     close.OnClick(close);
+
+                    //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
+                    //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
+                    //nevermind StartCoroutine is a monobehaviour function, will need to run with the new logger to check if it is still called frequently after new masterserver is set
                     Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#DISPLAYIP", "mwa ha ha", () => { Singleton<ServerList>.I.UpdateServerList(); }));
 
                 });
@@ -1058,6 +1074,9 @@ namespace OGAT_Modded_Client
                     Globals.ConnectedToMasterServer = false;
                     hostButton.SetActive(false);
                     //HostIpInput.SetActive(true);
+
+                    //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
+                    //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
                     Plugin.RunCoroutine(Plugin.ShowMessageDelayed("#ENTERMASTERSERVERIP", "well well well", ()=> { Singleton<ServerList>.I.UpdateServerList(); }));
                     close.gameObject.SetActive(true);
                     close.OnClick(close);
