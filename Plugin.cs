@@ -847,14 +847,22 @@ namespace OGAT_Modded_Client
 
             
         }
-
-        [HarmonyPrefix]
+        //next thing to log is how the Game.ServerStart method works as that is responsible for actually hosting the server
+        [HarmonyPostfix]
         [HarmonyPatch(typeof(ServerList), "UpdateServerList")]
         public static void LogUpdateServerList(ServerList __instance)
         {
             var myLogSource = new ManualLogSource("OGAT_MODDING_API");
             BepInEx.Logging.Logger.Sources.Add(myLogSource);
             myLogSource.LogInfo($"updating serverlist {__instance}, this is show ip: {__instance.showIP}");
+            
+            //trying to see if when the dedicated servers are actually removed from the update check
+            HostList hostList = ObjectCache.Get<HostList>(true);
+            for(int i = 0; i < hostList.HBEMNHBBPIM; i++)
+	        {
+                ServerInfo server = hostList.GetServer(i);
+                myLogSource.LogInfo($"server in server list: {server.RoomName}");
+            }
             BepInEx.Logging.Logger.Sources.Remove(myLogSource);
         }
 
@@ -959,6 +967,7 @@ namespace OGAT_Modded_Client
             Plugin.RunCoroutine((Plugin.WaitTillShowButton(() => Globals.isHost, UnLoadGameModdedGameModes.GetComponent<SGButton>())));
             myLogSource.LogInfo($"enter lobby: game modes {Singleton<Game>.I.gameModes.Count}");
             BepInEx.Logging.Logger.Sources.Remove(myLogSource);
+
         }
 
         [HarmonyPostfix]
@@ -1060,6 +1069,12 @@ namespace OGAT_Modded_Client
                     clientButton.gameObject.SetActive(false);
                     close.gameObject.SetActive(true);
                     close.OnClick(close);
+
+                    //ok so it appears that a server isnt added to the server list but I probably need to debug more with another device to be sure
+
+
+                    //trying to make a dummy server in order to see if update server list is working on my own
+                    Singleton<Game>.I.Server_start("test", "", false);
 
                     //I think instead of calling Singleton<ServerList>.I.UpdateServerList(); as an Action here I should actually call the StartCoroutine method (if it isnt just a generic method)
                     //as I think this will constistanbtly update the server list which fixes the issue of servers not showing up
