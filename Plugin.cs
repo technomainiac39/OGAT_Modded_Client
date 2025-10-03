@@ -747,32 +747,42 @@ namespace OGAT_Modded_Client
         }
         public static void ConnectToMasterServer(bool IpTyped= false)
         {
-            Network.Disconnect();
-            MasterServer.ipAddress = Globals.MasterServerIP;
-            MasterServer.port = Globals.MasterServerPort;
-            Network.natFacilitatorIP = Globals.MasterServerIP;
-            Network.natFacilitatorPort = 50005;
-            Netcode netcode = ObjectCache.Get<Netcode>(true);
-            if (netcode!= null)
+            try
+            {
+                Network.Disconnect();
+                MasterServer.ipAddress = Globals.MasterServerIP;
+                MasterServer.port = Globals.MasterServerPort;
+                Network.natFacilitatorIP = Globals.MasterServerIP;
+                Network.natFacilitatorPort = 50005;
+                Netcode netcode = ObjectCache.Get<Netcode>(true);
+                if (netcode != null)
+                {
+                    var myLogSource = new ManualLogSource("OGAT_MODDING_API");
+                    BepInEx.Logging.Logger.Sources.Add(myLogSource);
+                    myLogSource.LogInfo($"hmmmm");
+
+                    netcode.MasterServers.Clear();
+                    netcode.MasterServers.Add(new MasterServerInfo()
+                    {
+                        Name = "ModdedMasterServer",
+                        //Host = "127.0.0.1",
+                        Host = Globals.MasterServerIP,
+                        Port = 23466,
+                        myPublicEndPoint = ""       //////////////////maybe somethign
+                    });
+                    Globals.ConnectedToMasterServer = true;
+                }
+                if (IpTyped != false)
+                {
+                    //IpTyped.text = "Connected to masterServer";    
+                }
+            }
+            catch(Exception ex)
             {
                 var myLogSource = new ManualLogSource("OGAT_MODDING_API");
                 BepInEx.Logging.Logger.Sources.Add(myLogSource);
-                myLogSource.LogInfo($"hmmmm");
-
-                netcode.MasterServers.Clear();
-                netcode.MasterServers.Add(new MasterServerInfo()
-                {
-                    Name = "ModdedMasterServer",
-                    //Host = "127.0.0.1",
-                    Host = Globals.MasterServerIP,
-                    Port = 23466,
-                    myPublicEndPoint = ""
-                });
-                Globals.ConnectedToMasterServer = true;
-            }
-            if (IpTyped != false)
-            { 
-                //IpTyped.text = "Connected to masterServer";    
+                myLogSource.LogInfo($"{ex}");
+                BepInEx.Logging.Logger.Sources.Remove(myLogSource);
             }
             
 
@@ -1016,6 +1026,16 @@ namespace OGAT_Modded_Client
 
                 hostButton = API_Methods.CreateSGButton(__instance, "hostButton", new Vector2(200, 50), new Vector2(125, -50), "Host", 24, Color.white, Color.white, Globals.OGAT_Orange, on_click: (btn) =>
                 {
+                    //logic for trying to see if zerotier ip address is working
+                    string ipFromUnity = Network.player.ipAddress;
+                    string exIPFromUnity = Network.player.externalIP;
+                    
+
+                    var myLogSource2 = new ManualLogSource("OGAT_MODDING_API");
+                    BepInEx.Logging.Logger.Sources.Add(myLogSource2);
+                    myLogSource2.LogInfo($"IP from Unity is: internal {ipFromUnity}, external {exIPFromUnity} on port {Network.player.externalPort}");
+                    BepInEx.Logging.Logger.Sources.Remove(myLogSource2);
+                    ////
                     oneChoiceClicked = true;
                     Globals.MasterServerPort = 23466;
                     Plugin.HostMasterServer(close);
